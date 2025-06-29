@@ -45,7 +45,7 @@ public class UI extends JFrame {
 
     private void initComponents() {
         JPanel p = new JPanel();
-        p.setLayout(new GridLayout(2, 2, 10, 10));
+        p.setLayout(new GridLayout(4, 1, 10, 10));
 
         JButton bJug = new JButton("Ver Jugadores");
         JButton bClub = new JButton("Ver Clubes");
