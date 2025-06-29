@@ -16,58 +16,27 @@ public class Partido {
         this.equipoVisitante = equipoVisitante;
         this.golesLocal = golesLocal;
         this.golesVisitante = golesVisitante;
-        this.estadisticas = new Estadisticas();
+        this.estadisticas = new Estadisticas(new java.util.HashMap<>());
     }
 
-    public String getFecha() {
-        return fecha;
-    }
+    public String getFecha() { return fecha; }
+    public void setFecha(String fecha) { this.fecha = fecha; }
 
-    public void setFecha(String fecha) {
-        this.fecha = fecha;
-    }
+    public String getEquipoLocal() { return equipoLocal; }
+    public void setEquipoLocal(String equipoLocal) { this.equipoLocal = equipoLocal; }
 
-    public String getEquipoLocal() {
-        return equipoLocal;
-    }
+    public String getEquipoVisitante() { return equipoVisitante; }
+    public void setEquipoVisitante(String equipoVisitante) { this.equipoVisitante = equipoVisitante; }
 
-    public void setEquipoLocal(String equipoLocal) {
-        this.equipoLocal = equipoLocal;
-    }
+    public double getGolesLocal() { return golesLocal; }
+    public void setGolesLocal(double golesLocal) { this.golesLocal = golesLocal; }
 
-    public String getEquipoVisitante() {
-        return equipoVisitante;
-    }
+    public double getGolesVisitante() { return golesVisitante; }
+    public void setGolesVisitante(double golesVisitante) { this.golesVisitante = golesVisitante; }
 
-    public void setEquipoVisitante(String equipoVisitante) {
-        this.equipoVisitante = equipoVisitante;
-    }
-
-    public double getGolesLocal() {
-        return golesLocal;
-    }
-
-    public void setGolesLocal(double golesLocal) {
-        this.golesLocal = golesLocal;
-    }
-
-    public double getGolesVisitante() {
-        return golesVisitante;
-    }
-
-    public void setGolesVisitante(double golesVisitante) {
-        this.golesVisitante = golesVisitante;
-    }
-
-    public Estadisticas getEstadisticas() {
-        return estadisticas;
-    }
-
-    public void setEstadisticas(Estadisticas estadisticas) {
-        this.estadisticas = estadisticas;
-    }
+    public Estadisticas getEstadisticas() { return estadisticas; }
 
     public void agregarEstadistica(String clave, double valor) {
-        this.estadisticas.agregarEstadistica(clave, valor);
+        estadisticas.agregarEstadistica(clave, valor);
     }
 }

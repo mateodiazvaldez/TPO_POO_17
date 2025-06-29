@@ -1,19 +1,16 @@
 // src/model/Persona.java
 package model;
 
-import java.util.Map;
+public abstract class Persona {
+    private String nombre;
+    private Double edad;
+    private String club;
+    private String nacionalidad = "";
 
-public abstract class Persona implements ConEstadisticas {
-    protected String nombre;
-    protected double edad;
-    protected String club;
-    protected Estadisticas estadisticas;
-
-    public Persona(String nombre, double edad, String club) {
+    public Persona(String nombre, Double edad, String club) {
         this.nombre = nombre;
         this.edad = edad;
         this.club = club;
-        this.estadisticas = new Estadisticas();
     }
 
     public String getNombre() {
@@ -24,12 +21,20 @@ public abstract class Persona implements ConEstadisticas {
         this.nombre = nombre;
     }
 
-    public double getEdad() {
+    public Double getEdad() {
         return edad;
     }
 
-    public void setEdad(double edad) {
+    public void setEdad(Double edad) {
         this.edad = edad;
+    }
+
+    public String getNacionalidad() {
+        return nacionalidad;
+    }
+
+    public void setNacionalidad(String nacionalidad) {
+        this.nacionalidad = nacionalidad;
     }
 
     public String getClub() {
@@ -38,20 +43,5 @@ public abstract class Persona implements ConEstadisticas {
 
     public void setClub(String club) {
         this.club = club;
-    }
-
-    @Override
-    public Map<String, Double> getEstadisticas() {
-        return estadisticas.getEstadisticas();
-    }
-
-    @Override
-    public void setEstadisticas(Map<String, Double> estadisticas) {
-        this.estadisticas.setEstadisticas(estadisticas);
-    }
-
-    @Override
-    public double getValorEstadistica(String clave) {
-        return estadisticas.getValorEstadistica(clave);
     }
 }
