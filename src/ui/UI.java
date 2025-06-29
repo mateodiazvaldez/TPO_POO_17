@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 import java.util.function.Function;
+import javax.swing.table.DefaultTableModel;
 
 public class UI {
     private final GestorDeDatos gestor = new GestorDeDatos();
@@ -17,342 +18,323 @@ public class UI {
             List<Jugador> jugadores = gestor.cargarJugadores("data/jugadores.csv");
             List<Club>    clubes    = gestor.cargarClubes("data/clubes.csv");
             List<Partido> partidos  = gestor.cargarPartidos("data/partidos.csv");
+            // 1) Asignar jugadores a cada club y calcular valorPlantel
+            for (Club c : clubes) {
+                List<Jugador> subs = jugadores.stream()
+                    .filter(j -> j.getClub().equalsIgnoreCase(c.getNombre()))
+                    .toList();
+                c.setJugadores(subs);
+                c.setValorPlantel(gestor.calcularValorPlantel(c));
+            }
+            // crear Liga
             liga = new Liga("Primera División");
             liga.setJugadores(jugadores);
             liga.setClubes(clubes);
             liga.setPartidos(partidos);
+
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error al cargar datos: " + e.getMessage(),
-                                          "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null,
+                "Error al cargar datos: " + e.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
             throw new RuntimeException(e);
         }
         menuPrincipal();
     }
 
     public void menuPrincipal() {
+        String[] opciones = {"Ver Liga","Ver Clubes","Ver Jugadores","Ver Partidos","Salir"};
         while (true) {
-            String op = JOptionPane.showInputDialog(
-                "Menú Principal\n" +
-                "1) Ver Liga\n" +
-                "2) Ver Clubes\n" +
-                "3) Ver Jugadores\n" +
-                "4) Ver Partidos\n" +
-                "5) Salir\n" +
-                "Elige opción:"
-            );
-            if (op == null || op.equals("5")) break;
-            switch (op) {
-                case "1": menuLiga();     break;
-                case "2": menuClubes();   break;
-                case "3": menuJugadores();break;
-                case "4": menuPartidos(); break;
+            int sel = JOptionPane.showOptionDialog(null,
+                "Menú Principal", "TP Fútbol",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,
+                null, opciones, opciones[0]);
+            if (sel == 4 || sel == JOptionPane.CLOSED_OPTION) break;
+            switch (sel) {
+                case 0 -> menuLiga();
+                case 1 -> menuClubes();
+                case 2 -> menuJugadores();
+                case 3 -> menuPartidos();
             }
         }
     }
 
-    public void menuLiga() {
+    private void menuLiga() {
+        String[] ops = {"Tabla de Posiciones","Ver Partidos","Volver"};
         while (true) {
-            String op = JOptionPane.showInputDialog(
-                "Ver Liga\n" +
-                "1) Tabla de Posiciones\n" +
-                "2) Ver Partidos\n" +
-                "3) Volver\n" +
-                "Elige opción:"
-            );
-            if (op == null || op.equals("3")) break;
-            switch (op) {
-                case "1" ->
-                    mostrarTablaPosiciones(gestor.getTablaPosiciones(liga));
-                case "2" ->
-                    listarPartidos(liga.getPartidos());
+            int sel = JOptionPane.showOptionDialog(null,
+                "Ver Liga", "Liga",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,
+                null, ops, ops[0]);
+            if (sel == 2 || sel == JOptionPane.CLOSED_OPTION) break;
+            if (sel == 0) {
+                mostrarTablaPosiciones(gestor.getTablaPosiciones(liga));
+            } else {
+                listarPartidos(liga.getPartidos());
             }
         }
     }
 
-    public void menuClubes() {
+    private void menuClubes() {
+        String[] ops = {"Listar Clubes","Ordenar Clubes","Comparar Clubes","Seleccionar Club","Volver"};
         while (true) {
-            String op = JOptionPane.showInputDialog(
-                "Ver Clubes\n" +
-                "1) Listar Clubes\n" +
-                "2) Ordenar Clubes\n" +
-                "3) Comparar Clubes\n" +
-                "4) Seleccionar Club\n" +
-                "5) Volver\n" +
-                "Elige opción:"
-            );
-            if (op == null || op.equals("5")) break;
-            switch (op) {
-                case "1": listarClubes(liga.getClubes());    break;
-                case "2": ordenarClubes();                   break;
-                case "3": compararClubes();                  break;
-                case "4": seleccionarClub();                 break;
+            int sel = JOptionPane.showOptionDialog(null,
+                "Ver Clubes", "Clubes",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,
+                null, ops, ops[0]);
+            if (sel == 4 || sel == JOptionPane.CLOSED_OPTION) break;
+            switch (sel) {
+                case 0 -> listarClubes(liga.getClubes());
+                case 1 -> ordenarClubes();
+                case 2 -> compararClubes();
+                case 3 -> seleccionarClub();
             }
         }
     }
 
-    public void menuJugadores() {
+    private void menuJugadores() {
         menuVerJugadores(liga.getJugadores());
     }
 
     private void menuVerJugadores(List<Jugador> lista) {
+        String[] ops = {"Listar Jugadores","Ordenar Jugadores","Comparar Jugadores","Seleccionar Jugador","Volver"};
         while (true) {
-            String op = JOptionPane.showInputDialog(
-                "Ver Jugadores\n" +
-                "1) Listar Jugadores\n" +
-                "2) Ordenar Jugadores\n" +
-                "3) Comparar Jugadores\n" +
-                "4) Seleccionar Jugador\n" +
-                "5) Volver\n" +
-                "Elige opción:"
-            );
-            if (op == null || op.equals("5")) break;
-            switch (op) {
-                case "1": listarJugadores(lista);            break;
-                case "2": ordenarJugadores(lista);           break;
-                case "3": compararJugadores();               break;
-                case "4": seleccionarJugador(lista);         break;
+            int sel = JOptionPane.showOptionDialog(null,
+                "Ver Jugadores", "Jugadores",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,
+                null, ops, ops[0]);
+            if (sel == 4 || sel == JOptionPane.CLOSED_OPTION) break;
+            switch (sel) {
+                case 0 -> listarJugadores(lista);
+                case 1 -> ordenarJugadores(lista);
+                case 2 -> compararJugadores();
+                case 3 -> seleccionarJugador(lista);
             }
         }
     }
 
-    public void menuPartidos() {
+    private void menuPartidos() {
+        String[] ops = {"Listar Todos","Filtrar por Club","Volver"};
         while (true) {
-            String op = JOptionPane.showInputDialog(
-                "Ver Partidos\n" +
-                "1) Listar Todos\n" +
-                "2) Filtrar por Club\n" +
-                "3) Volver\n" +
-                "Elige opción:"
-            );
-            if (op == null || op.equals("3")) break;
-            switch (op) {
-                case "1":
-                    listarPartidos(liga.getPartidos());
-                    break;
-                case "2":
-                    Club club = seleccionarDeLista(
-                        liga.getClubes(), Club::getNombre, "Selecciona Club"
-                    );
-                    if (club != null) {
-                        listarPartidos(
-                            gestor.filtrarPartidos(
-                                liga.getPartidos(), club.getNombre()
-                            )
-                        );
-                    }
-                    break;
+            int sel = JOptionPane.showOptionDialog(null,
+                "Ver Partidos", "Partidos",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,
+                null, ops, ops[0]);
+            if (sel == 2 || sel == JOptionPane.CLOSED_OPTION) break;
+            if (sel == 0) {
+                listarPartidos(liga.getPartidos());
+            } else {
+                Club c = seleccionarDeLista(liga.getClubes(), Club::getNombre, "Selecciona Club");
+                if (c != null)
+                    listarPartidos(gestor.filtrarPartidos(liga.getPartidos(), c.getNombre()));
             }
         }
     }
 
-    // -----------------------------------
-    // Helpers de selección y formateo
+    // —————————————
+    // Helpers
 
-    private <T> T seleccionarDeLista(List<T> items,
-                                     Function<T,String> labeler,
-                                     String title) {
+    private <T> T seleccionarDeLista(List<T> items, Function<T,String> labeler, String title) {
         DefaultListModel<String> model = new DefaultListModel<>();
-        for (T it : items) model.addElement(labeler.apply(it));
+        items.forEach(i -> model.addElement(labeler.apply(i)));
         JList<String> list = new JList<>(model);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scroll = new JScrollPane(list);
         scroll.setPreferredSize(new Dimension(250, 200));
-        int res = JOptionPane.showConfirmDialog(
-            null, scroll, title, JOptionPane.OK_CANCEL_OPTION
-        );
-        if (res == JOptionPane.OK_OPTION && list.getSelectedIndex() >= 0) {
+        int ok = JOptionPane.showConfirmDialog(null, scroll, title,
+                                               JOptionPane.OK_CANCEL_OPTION);
+        if (ok == JOptionPane.OK_OPTION && list.getSelectedIndex()>=0)
             return items.get(list.getSelectedIndex());
-        }
         return null;
     }
 
     private String formatear(double x) {
-        return x == (long)x
-            ? String.valueOf((long)x)
-            : String.format("%.2f", x);
+        return x == (long)x ? String.valueOf((long)x) : String.format("%.2f", x);
     }
 
-    // -----------------------------------
-    // Listados y comparaciones
+    // —————————————
+    // Salidas en JTable o texto
 
     private void mostrarTablaPosiciones(List<Club> tabla) {
-        StringBuilder sb = new StringBuilder("Club | Pts | PG | PP | PE\n");
+        String[] cols = {"Club","Pts","PG","PP","PE"};
+        DefaultTableModel m = new DefaultTableModel(cols, 0);
         for (Club c : tabla) {
-            sb.append(c.getNombre()).append(" | ")
-              .append(formatear(c.getPuntos())).append(" | ")
-              .append(formatear(c.getPg())).append(" | ")
-              .append(formatear(c.getPp())).append(" | ")
-              .append(formatear(c.getPe())).append("\n");
+            m.addRow(new Object[]{
+                c.getNombre(),
+                formatear(c.getPuntos()),
+                formatear(c.getPg()),
+                formatear(c.getPp()),
+                formatear(c.getPe())
+            });
         }
-        JTextArea area = new JTextArea(sb.toString());
-        area.setEditable(false);
-        JScrollPane scroll = new JScrollPane(area);
-        scroll.setPreferredSize(new Dimension(300, 200));
-        JOptionPane.showMessageDialog(
-            null, scroll, "Tabla de Posiciones", JOptionPane.PLAIN_MESSAGE
-        );
+        JTable table = new JTable(m);
+        JScrollPane scroll = new JScrollPane(table);
+        scroll.setPreferredSize(new Dimension(400, 200));
+        JOptionPane.showMessageDialog(null, scroll,
+            "Tabla de Posiciones", JOptionPane.PLAIN_MESSAGE);
     }
 
     private void listarClubes(List<Club> clubes) {
-        JTextArea area = new JTextArea();
+        String[] cols = {"Club","Dt","VP"};
+        DefaultTableModel m = new DefaultTableModel(cols, 0);
         for (Club c : clubes) {
-            area.append(c.getNombre());
-            area.append("\n");
+            m.addRow(new Object[]{ c.getNombre(), c.getDt().getNombre(), c.getValorPlantel() });
         }
-        JScrollPane scroll = new JScrollPane(area);
-        scroll.setPreferredSize(new Dimension(200, 200));
-        JOptionPane.showMessageDialog(
-            null, scroll, "Clubes", JOptionPane.PLAIN_MESSAGE
-        );
+        JTable table = new JTable(m);
+        JScrollPane scroll = new JScrollPane(table);
+        scroll.setPreferredSize(new Dimension(400, 200));
+        JOptionPane.showMessageDialog(null, scroll,
+            "Clubes", JOptionPane.PLAIN_MESSAGE);
     }
 
     private void ordenarClubes() {
-        String op = JOptionPane.showInputDialog(
-            "Ordenar Clubes por:\n" +
-            "1) PG\n2) PP\n3) Puntos\n4) Valor Plantel\n" +
-            "Elige opción:"
-        );
-        if (op == null) return;
-        int crit = Integer.parseInt(op);
-        boolean desc = JOptionPane.showConfirmDialog(
-            null, "¿Orden descendente?", "Dirección",
-            JOptionPane.YES_NO_OPTION
-        ) == JOptionPane.YES_OPTION;
+        String[] opts = {"PG","PP","Pts","ValorPlantel"};
+        int sel = JOptionPane.showOptionDialog(null,
+            "Criterio de orden","Ordenar Clubes",
+            JOptionPane.DEFAULT_OPTION,JOptionPane.PLAIN_MESSAGE,
+            null,opts,opts[0]);
+        if (sel==-1) return;
+        boolean desc = JOptionPane.showConfirmDialog(null,
+            "Orden descendente?","Dirección",
+            JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION;
         mostrarTablaPosiciones(
-            gestor.ordenarClubes(liga.getClubes(), crit, desc)
+            gestor.ordenarClubes(liga.getClubes(), sel+1, desc)
         );
     }
 
     private void compararClubes() {
         Club c1 = seleccionarDeLista(liga.getClubes(), Club::getNombre, "Club 1");
         Club c2 = seleccionarDeLista(liga.getClubes(), Club::getNombre, "Club 2");
-        if (c1 != null && c2 != null) {
-            mostrarTablaPosiciones(List.of(c1, c2));
-        }
+        if (c1==null || c2==null || c1==c2) return;
+        mostrarTablaPosiciones(List.of(c1,c2));
     }
 
     private void seleccionarClub() {
-        Club club = seleccionarDeLista(liga.getClubes(), Club::getNombre, "Elige Club");
-        if (club == null) return;
+        Club c = seleccionarDeLista(liga.getClubes(), Club::getNombre, "Elige Club");
+        if (c==null) return;
+        String[] ops = {"Ver DT","Ver Estadísticas","Ver Jugadores","Volver"};
         while (true) {
-            String op = JOptionPane.showInputDialog(
-                "Club " + club.getNombre() + "\n" +
-                "1) Ver Estadísticas\n" +
-                "2) Ver Jugadores\n" +
-                "3) Volver\n" +
-                "Elige opción:"
-            );
-            if (op == null || op.equals("3")) break;
-            if (op.equals("1")) {
-                listarEstadisticasClub(club);
-            } else if (op.equals("2")) {
-                menuVerJugadores(
-                    gestor.filtrarJugadores(
-                        liga.getJugadores(), club.getNombre()
-                    )
-                );
+            int sel = JOptionPane.showOptionDialog(null,
+                "Club " + c.getNombre(),"Opciones Club",
+                JOptionPane.DEFAULT_OPTION,JOptionPane.PLAIN_MESSAGE,
+                null,ops,ops[0]);
+            if (sel<0 || sel==3) break;
+            switch(sel) {
+                case 0 -> // mostrar nombre de DT
+                    JOptionPane.showMessageDialog(null,
+                        "DT: " + c.getDt().getNombre(),
+                        "Director Técnico", JOptionPane.INFORMATION_MESSAGE);
+                case 1 -> listarEstadisticasClub(c);
+                case 2 -> menuVerJugadores(
+                             gestor.filtrarJugadores(liga.getJugadores(), c.getNombre()));
             }
         }
     }
 
     private void listarEstadisticasClub(Club c) {
-        String msg = String.format(
-            "PG: %s | PP: %s | PE: %s | Pts: %s | ValorPlantel: %d",
-            formatear(c.getPg()), formatear(c.getPp()),
-            formatear(c.getPe()), formatear(c.getPuntos()),
+        String[] cols = {"PG","PP","PE","Pts","VP"};
+        DefaultTableModel m = new DefaultTableModel(cols, 0);
+        m.addRow(new Object[]{
+            formatear(c.getPg()),
+            formatear(c.getPp()),
+            formatear(c.getPe()),
+            formatear(c.getPuntos()),
             c.getValorPlantel()
-        );
-        JOptionPane.showMessageDialog(
-            null, msg, "Estadísticas Club", JOptionPane.INFORMATION_MESSAGE
-        );
+        });
+        JTable t = new JTable(m);
+        JScrollPane scroll = new JScrollPane(t);
+        scroll.setPreferredSize(new Dimension(400,80));
+        JOptionPane.showMessageDialog(null, scroll,
+            "Estadísticas Club", JOptionPane.PLAIN_MESSAGE);
     }
 
-    private void listarPartidos(List<Partido> partidos) {
-        JTextArea area = new JTextArea();
-        for (Partido p : partidos) {
-            area.append(String.format(
-                "%s: %s %s-%s %s\n",
+    private void listarPartidos(List<Partido> ps) {
+        String[] cols = {"Fecha","Local","GL","GV","Visitante"};
+        DefaultTableModel m = new DefaultTableModel(cols, 0);
+        for (Partido p : ps) {
+            m.addRow(new Object[]{
                 p.getFecha(),
-                p.getEquipoLocal(), formatear(p.getGolesLocal()),
-                formatear(p.getGolesVisitante()), p.getEquipoVisitante()
-            ));
+                p.getEquipoLocal(),
+                formatear(p.getGolesLocal()),
+                formatear(p.getGolesVisitante()),
+                p.getEquipoVisitante()
+            });
         }
-        JScrollPane scroll = new JScrollPane(area);
-        scroll.setPreferredSize(new Dimension(300, 200));
-        JOptionPane.showMessageDialog(
-            null, scroll, "Partidos", JOptionPane.PLAIN_MESSAGE
-        );
+        JTable t = new JTable(m);
+        JScrollPane scroll = new JScrollPane(t);
+        scroll.setPreferredSize(new Dimension(500,200));
+        JOptionPane.showMessageDialog(null, scroll,
+            "Partidos", JOptionPane.PLAIN_MESSAGE);
     }
 
-    private void listarJugadores(List<Jugador> jugadores) {
-        JTextArea area = new JTextArea();
-        for (Jugador j : jugadores) {
-            area.append(String.format(
-                "%s – Goles: %s, Asis: %s, Vallas: %s, Valor: %d\n",
+    private void listarJugadores(List<Jugador> js) {
+        String[] cols = {"Jugador","Goles","Asis","Vallas","Valor"};
+        DefaultTableModel m = new DefaultTableModel(cols, 0);
+        for (Jugador j : js) {
+            m.addRow(new Object[]{
                 j.getNombre(),
-                formatear(j.getGoles()), formatear(j.getAsistencias()),
-                formatear(j.getVallas()), j.getValorMercado()
-            ));
+                formatear(j.getGoles()),
+                formatear(j.getAsistencias()),
+                formatear(j.getVallas()),
+                j.getValorMercado()
+            });
         }
-        JScrollPane scroll = new JScrollPane(area);
-        scroll.setPreferredSize(new Dimension(300, 200));
-        JOptionPane.showMessageDialog(
-            null, scroll, "Jugadores", JOptionPane.PLAIN_MESSAGE
-        );
+        JTable t = new JTable(m);
+        JScrollPane scroll = new JScrollPane(t);
+        scroll.setPreferredSize(new Dimension(500,200));
+        JOptionPane.showMessageDialog(null, scroll,
+            "Jugadores", JOptionPane.PLAIN_MESSAGE);
     }
 
     private void ordenarJugadores(List<Jugador> lista) {
-        String op = JOptionPane.showInputDialog(
-            "Ordenar Jugadores por:\n" +
-            "1) Goles\n2) Asistencias\n3) Vallas\n4) Valor Mercado\n" +
-            "Elige opción:"
-        );
-        if (op == null) return;
-        int crit = Integer.parseInt(op);
-        boolean desc = JOptionPane.showConfirmDialog(
-            null, "¿Orden descendente?", "Dirección",
-            JOptionPane.YES_NO_OPTION
-        ) == JOptionPane.YES_OPTION;
-        listarJugadores(gestor.ordenarJugadores(lista, crit, desc));
+        String[] opts = {"Goles","Asistencias","Vallas","ValorMercado"};
+        int sel = JOptionPane.showOptionDialog(null,
+            "Criterio de orden","Ordenar Jugadores",
+            JOptionPane.DEFAULT_OPTION,JOptionPane.PLAIN_MESSAGE,
+            null,opts,opts[0]);
+        if (sel==-1) return;
+        boolean desc = JOptionPane.showConfirmDialog(null,
+            "Orden descendente?","Dirección",
+            JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION;
+        listarJugadores(gestor.ordenarJugadores(lista, sel+1, desc));
     }
 
     private void compararJugadores() {
         Jugador j1 = seleccionarDeLista(liga.getJugadores(), Jugador::getNombre, "Jugador 1");
         Jugador j2 = seleccionarDeLista(liga.getJugadores(), Jugador::getNombre, "Jugador 2");
-        if (j1 != null && j2 != null) {
-            listarEstadisticasJugador(j1);
-            listarEstadisticasJugador(j2);
-        }
+        if (j1==null || j2==null || j1==j2) return;
+        listarJugadores(List.of(j1, j2));
     }
 
     private void seleccionarJugador(List<Jugador> lista) {
         while (true) {
             Jugador j = seleccionarDeLista(lista, Jugador::getNombre, "Elige Jugador");
-            if (j == null) break;
-            String op = JOptionPane.showInputDialog(
-                "Jugador " + j.getNombre() + "\n" +
-                "1) Ver Estadísticas\n" +
-                "2) Seleccionar Otro\n" +
-                "3) Volver\n" +
-                "Elige opción:"
-            );
-            if (op == null || op.equals("3")) break;
-            if (op.equals("1")) listarEstadisticasJugador(j);
+            if (j==null) break;
+            String[] ops = {"Ver Estadísticas","Seleccionar Otro","Volver"};
+            int sel = JOptionPane.showOptionDialog(null,
+                "Jugador " + j.getNombre(),"Opciones Jugador",
+                JOptionPane.DEFAULT_OPTION,JOptionPane.PLAIN_MESSAGE,
+                null,ops,ops[0]);
+            if (sel<0 || sel==2) break;
+            if (sel==0) listarEstadisticasJugador(j);
         }
     }
 
     private void listarEstadisticasJugador(Jugador j) {
-        StringBuilder sb = new StringBuilder(j.getNombre() + " stats:\n");
-        sb.append("Goles: ").append(formatear(j.getGoles()))
-          .append(" | Asis: ").append(formatear(j.getAsistencias()))
-          .append(" | Vallas: ").append(formatear(j.getVallas()))
-          .append(" | Valor: ").append(j.getValorMercado()).append("\n");
-        j.getEstadisticas().forEach((k, v) ->
-            sb.append(k).append(": ").append(formatear(v)).append("\n")
+        String[] cols = {"Goles","Asis","Vallas","Valor"};
+        DefaultTableModel m = new DefaultTableModel(cols, 0);
+        m.addRow(new Object[]{
+            formatear(j.getGoles()),
+            formatear(j.getAsistencias()),
+            formatear(j.getVallas()),
+            j.getValorMercado()
+        });
+        j.getEstadisticas().forEach((k,v) ->
+            m.addRow(new Object[]{k, formatear(v), "", ""})
         );
-        JOptionPane.showMessageDialog(
-            null, sb.toString(),
-            "Estadísticas Jugador", JOptionPane.INFORMATION_MESSAGE
-        );
+        JTable t = new JTable(m);
+        JScrollPane scroll = new JScrollPane(t);
+        scroll.setPreferredSize(new Dimension(400,200));
+        JOptionPane.showMessageDialog(null, scroll,
+            "Estadísticas Jugador", JOptionPane.PLAIN_MESSAGE);
     }
 }

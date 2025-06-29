@@ -1,3 +1,4 @@
+// src/service/GestorDeDatos.java
 package service;
 
 import model.*;
@@ -166,5 +167,15 @@ public class GestorDeDatos {
         List<Club> tabla = new ArrayList<>(liga.getClubes());
         tabla.sort(Comparator.comparingDouble(Club::getPuntos).reversed());
         return tabla;
+    }
+
+    /**
+     * Calcula el valor total del plantel de un club
+     */
+    public int calcularValorPlantel(Club club) {
+        return club.getJugadores()
+                   .stream()
+                   .mapToInt(Jugador::getValorMercado)
+                   .sum();
     }
 }
