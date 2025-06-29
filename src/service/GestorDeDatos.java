@@ -1,4 +1,3 @@
-// src/service/GestorDeDatos.java
 package service;
 
 import model.*;
@@ -67,15 +66,15 @@ public class GestorDeDatos {
 
     public List<Jugador> filtrarJugadores(List<Jugador> todos, String club) {
         return todos.stream()
-            .filter(j -> j.getClub().equalsIgnoreCase(club))
-            .collect(Collectors.toList());
+                    .filter(j -> j.getClub().equalsIgnoreCase(club))
+                    .collect(Collectors.toList());
     }
 
     public List<Partido> filtrarPartidos(List<Partido> todos, String club) {
         return todos.stream()
-            .filter(p -> p.getEquipoLocal().equalsIgnoreCase(club)
-                      || p.getEquipoVisitante().equalsIgnoreCase(club))
-            .collect(Collectors.toList());
+                    .filter(p -> p.getEquipoLocal().equalsIgnoreCase(club)
+                              || p.getEquipoVisitante().equalsIgnoreCase(club))
+                    .collect(Collectors.toList());
     }
 
     public List<Jugador> ordenarJugadores(List<Jugador> lista,
@@ -110,19 +109,18 @@ public class GestorDeDatos {
 
     public Club buscarClub(List<Club> lista, String nombre) {
         return lista.stream()
-            .filter(c -> c.getNombre().equalsIgnoreCase(nombre))
-            .findFirst().orElse(null);
+                    .filter(c -> c.getNombre().equalsIgnoreCase(nombre))
+                    .findFirst().orElse(null);
     }
 
     public Jugador buscarJugador(List<Jugador> lista, String nombre) {
         return lista.stream()
-            .filter(j -> j.getNombre().equalsIgnoreCase(nombre))
-            .findFirst().orElse(null);
+                    .filter(j -> j.getNombre().equalsIgnoreCase(nombre))
+                    .findFirst().orElse(null);
     }
 
     /**
-     * Calcula para cada club de la liga:
-     * PJ, PG, PE, PP y puntos según los partidos cargados.
+     * Calcula PJ, PG, PE, PP y puntos según los partidos cargados en la liga.
      */
     public void calcularClasificacion(Liga liga) {
         // Reiniciar contadores
@@ -133,15 +131,15 @@ public class GestorDeDatos {
             c.setPp(0.0);
             c.setPuntos(0.0);
         }
-        // Recorrer partidos
+        // Recuento de partidos
         for (Partido p : liga.getPartidos()) {
-            Club local = buscarClub(liga.getClubes(), p.getEquipoLocal());
+            Club local  = buscarClub(liga.getClubes(), p.getEquipoLocal());
             Club visita = buscarClub(liga.getClubes(), p.getEquipoVisitante());
             if (local == null || visita == null) continue;
-            // PJ
+
             local.setPj(local.getPj() + 1);
             visita.setPj(visita.getPj() + 1);
-            // Resultados
+
             if (p.getGolesLocal() > p.getGolesVisitante()) {
                 local.setPg(local.getPg() + 1);
                 local.setPuntos(local.getPuntos() + 3);
@@ -157,5 +155,16 @@ public class GestorDeDatos {
                 visita.setPuntos(visita.getPuntos() + 1);
             }
         }
+    }
+
+    /**
+     * Devuelve la tabla de posiciones ordenada por puntos descendente,
+     * mostrando solo Pts, PG, PP y PE.
+     */
+    public List<Club> getTablaPosiciones(Liga liga) {
+        calcularClasificacion(liga);
+        List<Club> tabla = new ArrayList<>(liga.getClubes());
+        tabla.sort(Comparator.comparingDouble(Club::getPuntos).reversed());
+        return tabla;
     }
 }
