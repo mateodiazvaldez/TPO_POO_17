@@ -1,4 +1,4 @@
-// src/model/Club.java
+
 package model;
 
 import java.util.List;

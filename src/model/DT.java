@@ -1,4 +1,4 @@
-// src/model/DT.java
+
 package model;
 
 public class DT extends Persona {

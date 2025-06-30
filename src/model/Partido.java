@@ -1,5 +1,7 @@
-// src/model/Partido.java
+
 package model;
+
+import java.util.Map;
 
 public class Partido {
     private String fecha;
@@ -34,7 +36,10 @@ public class Partido {
     public double getGolesVisitante() { return golesVisitante; }
     public void setGolesVisitante(double golesVisitante) { this.golesVisitante = golesVisitante; }
 
-    public Estadisticas getEstadisticas() { return estadisticas; }
+    
+    public Map<String, Double> getEstadisticas() {
+        return estadisticas.getEstadisticas();
+    }
 
     public void agregarEstadistica(String clave, double valor) {
         estadisticas.agregarEstadistica(clave, valor);

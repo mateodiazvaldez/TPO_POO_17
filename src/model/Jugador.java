@@ -1,4 +1,4 @@
-// src/model/Jugador.java
+
 package model;
 
 import java.util.HashMap;

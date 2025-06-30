@@ -1,4 +1,4 @@
-// src/model/Liga.java
+
 package model;
 
 import java.util.List;

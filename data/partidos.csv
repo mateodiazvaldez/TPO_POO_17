@@ -1,9 +1,9 @@
-fecha,equipoLocal,equipoVisitante,golesLocal,golesVisitante
-2025-03-01,Arsenal,Chelsea,2,1
-2025-03-02,Liverpool,Manchester City,1,3
-2025-03-03,Manchester United,Tottenham,0,2
-2025-03-04,Everton,Leicester,1,1
-2025-03-05,Arsenal,Liverpool,1,2
-2025-03-06,Manchester City,Manchester United,2,0
-2025-03-07,Chelsea,Tottenham,0,1
-2025-03-08,Leicester,Everton,0,2
+fecha,equipoLocal,equipoVisitante,golesLocal,golesVisitante,posesionLocal,posesionVisitante,tirosPuertaLocal,tirosPuertaVisitante
+2023-08-01,Real Madrid,Barcelona,2,1,58.3,41.7,7,3
+2023-08-05,Manchester United,Liverpool,1,3,45.0,55.0,4,9
+2023-08-10,Bayern Munich,Paris Saint-Germain,0,2,52.5,47.5,5,6
+2023-08-15,Juventus,Chelsea,1,1,49.0,51.0,6,6
+2023-08-20,Real Madrid,Manchester United,3,2,61.2,38.8,10,4
+2023-08-25,Barcelona,Liverpool,2,2,57.8,42.2,8,5
+2023-08-30,Bayern Munich,Juventus,4,1,63.0,37.0,9,2
+2023-09-04,Paris Saint-Germain,Chelsea,3,0,54.5,45.5,11,1

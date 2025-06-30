@@ -1,4 +1,4 @@
-// src/model/Estadisticas.java
+
 package model;
 
 import java.util.HashMap;

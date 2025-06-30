@@ -1,4 +1,4 @@
-// src/model/Persona.java
+
 package model;
 
 public abstract class Persona {
