@@ -1,11 +1,12 @@
 // src/ui/UI.java
 package ui;
 
-import model.*;
-import service.GestorDeDatos;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+
+import clases.*;
+import datos.GestorDeDatos;
+
 import java.awt.*;
 import java.util.List;
 import java.util.Map;
@@ -14,19 +15,18 @@ import java.util.function.Function;
 public class UI {
 
     public void menuPrincipal(Liga liga, GestorDeDatos gestor) {
-        String[] opts = {"Ver Liga","Ver Clubes","Ver Jugadores","Ver Partidos","Salir"};
+        String[] opts = {"Ver Liga","Ver Clubes","Ver Jugadores", "Salir"};
         while (true) {
             int sel = JOptionPane.showOptionDialog(
-                null, "Menú Principal","TP Fútbol",
+                null, "Menú Principal","Sistema de Estadisticas",
                 JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,
                 null, opts, opts[0]
             );
-            if (sel == 4 || sel == JOptionPane.CLOSED_OPTION) break;
+            if (sel == 3 || sel == JOptionPane.CLOSED_OPTION) break;
             switch (sel) {
                 case 0 -> menuLiga(liga, gestor);
                 case 1 -> menuClubes(liga, gestor);
                 case 2 -> menuVerJugadores(liga.getJugadores(), gestor);
-                case 3 -> menuPartidos(liga, gestor);
             }
         }
     }
@@ -165,7 +165,7 @@ public class UI {
                 c.getValorPlantel()
             });
         }
-        showTableDialog(new JTable(m), "Tabla de Posiciones");
+        mostrarDialogoTabla(new JTable(m), "Tabla de Posiciones");
     }
 
     private void listarClubes(Liga liga) {
@@ -178,7 +178,7 @@ public class UI {
                 c.getValorPlantel()
             });
         }
-        showTableDialog(new JTable(m), "Clubes");
+        mostrarDialogoTabla(new JTable(m), "Clubes");
     }
 
     private void ordenarClubes(Liga liga, GestorDeDatos gestor) {
@@ -227,7 +227,7 @@ public class UI {
                 c.getValorPlantel()
             });
         }
-        showTableDialog(new JTable(m), "Clubes Ordenados");
+        mostrarDialogoTabla(new JTable(m), "Clubes Ordenados");
     }
 
     private void compararClubes(Liga liga) {
@@ -243,7 +243,7 @@ public class UI {
                 c.getValorPlantel()
             });
         }
-        showTableDialog(new JTable(m), "Comparación Clubes");
+        mostrarDialogoTabla(new JTable(m), "Comparación Clubes");
     }
 
     private void seleccionarClub(Liga liga, GestorDeDatos gestor) {
@@ -282,7 +282,7 @@ public class UI {
             c.getPg(), c.getPp(), c.getPe(),
             c.getPuntos(), c.getValorPlantel()
         });
-        showTableDialog(new JTable(m), "Estadísticas Club");
+        mostrarDialogoTabla(new JTable(m), "Estadísticas Club");
     }
 
     private void listarPartidos(List<Partido> ps) {
@@ -297,7 +297,7 @@ public class UI {
                 p.getEquipoVisitante()
             });
         }
-        showTableDialog(new JTable(m), "Partidos");
+        mostrarDialogoTabla(new JTable(m), "Partidos");
     }
 
     private void listarJugadores(List<Jugador> js) {
@@ -312,7 +312,7 @@ public class UI {
                 j.getValorMercado()
             });
         }
-        showTableDialog(new JTable(m), "Jugadores");
+        mostrarDialogoTabla(new JTable(m), "Jugadores");
     }
 
     private void ordenarJugadores(List<Jugador> lista, GestorDeDatos gestor) {
@@ -394,7 +394,7 @@ public class UI {
         return null;
     }
 
-    private void showTableDialog(JTable table, String title) {
+    private void mostrarDialogoTabla(JTable table, String title) {
         JScrollPane scroll = new JScrollPane(table);
         scroll.setPreferredSize(new Dimension(500,200));
         JOptionPane.showMessageDialog(null, scroll, title, JOptionPane.PLAIN_MESSAGE);

@@ -1,20 +1,21 @@
 // src/app/Main.java
-package app;
+package main;
 
-import model.*;
-import service.GestorDeDatos;
 import ui.UI;
 
 import java.util.List;
+
+import clases.*;
+import datos.GestorDeDatos;
 
 public class Main {
     public static void main(String[] args) {
         GestorDeDatos gestor = new GestorDeDatos();
         try {
             // 1) Cargar todas las fuentes de datos
-            List<Jugador> jugadores = gestor.cargarJugadores("data/jugadores.csv");
-            List<Club>    clubes    = gestor.cargarClubes("data/clubes.csv");
-            List<Partido> partidos  = gestor.cargarPartidos("data/partidos.csv");
+            List<Jugador> jugadores = gestor.cargarJugadores("archivos/jugadores.csv");
+            List<Club>    clubes    = gestor.cargarClubes("archivos/clubes.csv");
+            List<Partido> partidos  = gestor.cargarPartidos("archivos/partidos.csv");
 
             // 2) Asignar jugadores a cada club y calcular valorPlantel
             for (Club c : clubes) {

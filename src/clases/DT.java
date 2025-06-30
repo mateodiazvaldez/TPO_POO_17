@@ -1,5 +1,5 @@
 
-package model;
+package clases;
 
 public class DT extends Persona {
     public DT(String nombre, Double edad, String club) {

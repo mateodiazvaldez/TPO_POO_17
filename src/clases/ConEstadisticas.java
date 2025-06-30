@@ -1,5 +1,5 @@
 
-package model;
+package clases;
 
 import java.util.Map;
 

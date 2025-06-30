@@ -1,11 +1,12 @@
 // src/service/GestorDeDatos.java
-package service;
+package datos;
 
-import model.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import clases.*;
 
 public class GestorDeDatos {
 
